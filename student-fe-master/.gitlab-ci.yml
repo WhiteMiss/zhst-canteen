@@ -1,0 +1,47 @@
+image: node:10.15.3
+
+cache:
+  paths:
+    - node_modules/
+
+stages:
+  - build
+  - deploy
+
+before_script:
+  - 'which ssh-agent || ( apt update -y && apt install openssh-client -y )'
+  - eval $(ssh-agent -s)
+  - ssh-add <(echo "$SSH_PRIVATE_KEY_DEV")
+  - mkdir -p ~/.ssh
+  - '[[ -f /.dockerenv ]] && echo -e "Host *\n\tStrictHostKeyChecking no\n\n" > ~/.ssh/config'
+
+
+build_job:
+  stage: build
+  script:
+    - npm set registry https://registry.npm.taobao.org
+    - npm install
+    - npm audit fix
+    - npm run build
+  tags:
+    - fe
+    - student
+  only:
+    - master
+  artifacts:
+    paths:
+      - zhst
+
+deploy_job:
+  stage: deploy
+  only:
+    - master
+  script:
+    # scp复制发布文件到服务器
+    - ssh root@$DEPLOY_SERVER_DEV "rm -rf $STUFE_DIR"
+    - ssh root@$DEPLOY_SERVER_DEV "mkdir -p $STUFE_DIR"
+    - scp zhst/index.html root@$DEPLOY_SERVER_DEV:$STUFE_DIR
+    - scp -r zhst root@$DEPLOY_SERVER_DEV:$STUFE_DIR
+  tags:
+    - fe
+    - student
