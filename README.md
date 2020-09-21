@@ -10,7 +10,7 @@
 
 ### 1.1用户端
 
-![1600667546451](C:\Users\HASEE\AppData\Roaming\Typora\typora-user-images\1600667546451.png)
+![Image text](https://github.com/WhiteMiss/zhst-canteen/blob/master/img-folder/1600667546451.png)
 
 ![1600667566375](C:\Users\HASEE\AppData\Roaming\Typora\typora-user-images\1600667566375.png)
 
